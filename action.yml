@@ -1,0 +1,15 @@
+name: Download DragonRuby
+description: |
+  An action for downloading binaries (and if necessary C headers) of the DragonRuby Game Toolkit to run tests and/or
+  build C Extensions.
+
+inputs:
+  version:
+    description: Version to download
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - run: echo "test"
+      shell: bash
