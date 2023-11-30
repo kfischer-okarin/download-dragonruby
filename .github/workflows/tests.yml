@@ -1,0 +1,32 @@
+name: tests
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - main
+
+env:
+  # For headless DragonRuby execution
+  SDL_AUDIODRIVER: dummy
+  SDL_VIDEODRIVER: dummy
+
+jobs:
+  test-specific-version:
+    name: Test specific version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download DragonRuby
+        uses: ./
+        with:
+          version: '5.3'
