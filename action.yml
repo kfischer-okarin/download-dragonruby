@@ -1,7 +1,6 @@
 name: Download DragonRuby
 description: |
-  An action for downloading binaries (and if necessary C headers) of the DragonRuby Game Toolkit to run tests and/or
-  build C Extensions.
+  An action for downloading binaries (and if necessary C headers) of the DragonRuby Game Toolkit.
 
 inputs:
   version:
