@@ -16,3 +16,8 @@ runs:
     - name: Download DragonRuby ${{ inputs.version }}
       run: download_dragonruby.sh ${{ inputs.version }}
       shell: bash
+      if: ${{ inputs.version != 'latest' }}
+    - name: Download latest DragonRuby
+      run: download_dragonruby.sh $(print_latest_dragonruby_version.sh)
+      shell: bash
+      if: ${{ inputs.version == 'latest' }}
