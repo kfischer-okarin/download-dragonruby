@@ -58,3 +58,28 @@ jobs:
         run: |
           expected_version=$(./print_latest_dragonruby_version.sh)
           ./tests/verify-dragonruby-version $expected_version
+  test-pro-version:
+    name: Test Pro version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download DragonRuby
+        uses: ./
+        with:
+          license_tier: pro
+      - name: Verify that it is Pro
+        run: |
+          if [ ! -f "./include/dragonruby.h" ]; then
+            echo "DragonRuby C header didn't exist"
+            exit 1
+          fi

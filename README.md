@@ -17,4 +17,11 @@ steps:
     # - Specific version like '5.11'
     # - 'latest' for latest version
     version: 'latest'
+
+    # Which license tier to download.
+    # Pro version also includes C headers.
+    # Possible values:
+    # - 'standard'
+    # - 'pro'
+    license_tier: 'standard'
 ```
