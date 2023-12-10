@@ -35,3 +35,26 @@ jobs:
           version: '5.3'
       - name: Verify Version
         run: ./tests/verify-dragonruby-version 5.3
+  test-latest-version:
+    name: Test latest version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download DragonRuby
+        uses: ./
+        with:
+          version: latest
+      - name: Verify Version
+        run: |
+          expected_version=$(./print_latest_dragonruby_version.sh)
+          ./tests/verify-dragonruby-version $expected_version
