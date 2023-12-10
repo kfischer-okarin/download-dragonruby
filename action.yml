@@ -7,17 +7,20 @@ inputs:
   version:
     description: Version to download
     default: 'latest'
+  license_tier:
+    description: Which license tier to download
+    default: 'standard'
 
 runs:
   using: "composite"
   steps:
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
-    - name: Download DragonRuby ${{ inputs.version }}
-      run: download_dragonruby.sh ${{ inputs.version }}
+    - name: Download DragonRuby ${{ inputs.version }}-${{ inputs.license_tier }}
+      run: download_dragonruby.sh ${{ inputs.version }} ${{ inputs.license_tier }}
       shell: bash
       if: ${{ inputs.version != 'latest' }}
-    - name: Download latest DragonRuby
-      run: download_dragonruby.sh $(print_latest_dragonruby_version.sh)
+    - name: Download latest DragonRuby (${{inputs.license_tier}})
+      run: download_dragonruby.sh $(print_latest_dragonruby_version.sh) ${{ inputs.license_tier }}
       shell: bash
       if: ${{ inputs.version == 'latest' }}
