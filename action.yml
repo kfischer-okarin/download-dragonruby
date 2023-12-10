@@ -1,0 +1,26 @@
+name: Download DragonRuby
+description: |
+  An action for downloading binaries (and if necessary C headers) of the DragonRuby Game Toolkit to run tests and/or
+  build C Extensions.
+
+inputs:
+  version:
+    description: Version to download
+    default: 'latest'
+  license_tier:
+    description: Which license tier to download
+    default: 'standard'
+
+runs:
+  using: "composite"
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - name: Download DragonRuby ${{ inputs.version }}-${{ inputs.license_tier }}
+      run: download_dragonruby.sh ${{ inputs.version }} ${{ inputs.license_tier }}
+      shell: bash
+      if: ${{ inputs.version != 'latest' }}
+    - name: Download latest DragonRuby (${{inputs.license_tier}})
+      run: download_dragonruby.sh $(print_latest_dragonruby_version.sh) ${{ inputs.license_tier }}
+      shell: bash
+      if: ${{ inputs.version == 'latest' }}

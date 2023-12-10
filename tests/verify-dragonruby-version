@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+expected_version=$1
+
+./dragonruby tests/testgame --eval write_version_to_file.rb --no-tick
+
+version_file_path=tests/testgame/version.txt
+
+if [ ! -f $version_file_path ]; then
+  echo "version.txt not found"
+  exit 1
+fi
+
+actual_version=$(cat $version_file_path)
+
+if [[ $actual_version != $expected_version ]]; then
+  echo "Expected version $expected_version, got $actual_version"
+  exit 1
+fi
