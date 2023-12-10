@@ -2,6 +2,10 @@ name: Download DragonRuby
 description: |
   An action for downloading binaries (and if necessary C headers) of the DragonRuby Game Toolkit.
 
+branding:
+  icon: download
+  color: red
+
 inputs:
   version:
     description: Version to download
