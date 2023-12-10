@@ -11,5 +11,11 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "test"
+    - name: Download DragonRuby ${{ inputs.version }}
+      run: |
+        base_url="https://github.com/kfischer-okarin/dragonruby-for-ci/releases/download/${{ inputs.version }}"
+        filename="dragonruby-for-ci-${{ inputs.version }}-standard-linux-amd64.zip"
+        curl -L -o dragonruby.zip $base_url/$filename
+        unzip dragonruby.zip
+        chmod u+x ./dragonruby
       shell: bash
