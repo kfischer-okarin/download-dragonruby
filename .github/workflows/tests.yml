@@ -24,9 +24,14 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macos-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
       - name: Download DragonRuby
         uses: ./
         with:
           version: '5.3'
+      - name: Verify Version
+        run: ./tests/verify-dragonruby-version 5.3
