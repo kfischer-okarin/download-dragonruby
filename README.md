@@ -25,3 +25,42 @@ steps:
     # - 'pro'
     license_tier: 'standard'
 ```
+
+## Example Workflows
+
+### Run tests for your DragonRuby project
+```yaml
+name: Tests
+
+on:
+  push:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        dr_version:
+          - '5.3'
+          - 'latest'
+        runner:
+          - windows-2022
+          - macos-12
+          - ubuntu-22.04
+      fail-fast: false
+    runs-on: ${{ matrix.runner }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: kfischer-okarin/download-dragonruby@v1
+        with:
+          version: ${{ matrix.dr_version }}
+      - name: Run tests
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          ./dragonruby mygame --test tests.rb | tee tests.log
+          grep '\[Game\] 0 test(s) failed.' tests.log
+```
