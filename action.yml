@@ -6,7 +6,7 @@ description: |
 inputs:
   version:
     description: Version to download
-    required: true
+    default: 'latest'
 
 runs:
   using: "composite"
