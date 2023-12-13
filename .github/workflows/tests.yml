@@ -30,11 +30,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download DragonRuby
+        id: download_dragonruby
         uses: ./
         with:
           version: '5.3'
       - name: Verify Version
         run: ./tests/verify-dragonruby-version 5.3
+      - name: Verify Outputs
+        run: test "${{ steps.download_dragonruby.outputs.version }}" == "5.3"
   test-latest-version:
     name: Test latest version
     runs-on: ${{ matrix.os }}
