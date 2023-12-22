@@ -30,11 +30,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download DragonRuby
+        id: download-dragonruby
         uses: ./
         with:
           version: '5.3'
       - name: Verify Version
         run: ./tests/verify-dragonruby-version 5.3
+      - name: Verify version output
+        run: test "${{ steps.download-dragonruby.outputs.version }}" == "5.3"
+      - name: Verify platform output
+        run: |
+          platform="${{ steps.download-dragonruby.outputs.platform }}"
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            test $platform == "linux-amd64"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            test $platform == "macos"
+          else
+            test $platform == "windows-amd64"
+          fi
   test-latest-version:
     name: Test latest version
     runs-on: ${{ matrix.os }}
@@ -51,6 +64,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download DragonRuby
+        id: download-dragonruby
         uses: ./
         with:
           version: latest
@@ -58,6 +72,10 @@ jobs:
         run: |
           expected_version=$(./print_latest_dragonruby_version.sh)
           ./tests/verify-dragonruby-version $expected_version
+      - name: Verify Outputs
+        run: |
+          expected_version=$(./print_latest_dragonruby_version.sh)
+          test "${{ steps.download-dragonruby.outputs.version }}" == "$expected_version"
   test-pro-version:
     name: Test Pro version
     runs-on: ${{ matrix.os }}

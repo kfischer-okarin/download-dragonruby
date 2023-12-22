@@ -14,16 +14,39 @@ inputs:
     description: Which license tier to download
     default: 'standard'
 
+outputs:
+  version:
+    description: Version downloaded
+    value: ${{ steps.download-dragonruby.outputs.version }}
+  platform:
+    description: DragonRuby platform. One of 'windows-amd64', 'macos', 'linux-amd64'.
+    value: ${{ steps.download-dragonruby.outputs.platform }}
+
 runs:
   using: "composite"
   steps:
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
-    - name: Download DragonRuby ${{ inputs.version }}-${{ inputs.license_tier }}
-      run: download_dragonruby.sh ${{ inputs.version }} ${{ inputs.license_tier }}
+    - name: Set Version ${{ inputs.version }}
+      run: echo "DR_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
       shell: bash
       if: ${{ inputs.version != 'latest' }}
-    - name: Download latest DragonRuby (${{inputs.license_tier}})
-      run: download_dragonruby.sh $(print_latest_dragonruby_version.sh) ${{ inputs.license_tier }}
+    - name: Set latest version
+      run: echo "DR_VERSION=$(print_latest_dragonruby_version.sh)" >> "$GITHUB_ENV"
       shell: bash
       if: ${{ inputs.version == 'latest' }}
+    - name: Download DragonRuby ${{ env.DR_VERSION }}-${{ inputs.license_tier }}
+      id: download-dragonruby
+      run: |
+        download_dragonruby.sh $DR_VERSION ${{ inputs.license_tier }}
+        echo "version=$DR_VERSION" >> $GITHUB_OUTPUT
+
+        if [[ $RUNNER_OS == "Linux" ]]; then
+          platform="linux-amd64"
+        elif [[ $RUNNER_OS == "macOS" ]]; then
+          platform="macos"
+        elif [[ $RUNNER_OS == "Windows" ]]; then
+          platform="windows-amd64"
+        fi
+        echo "platform=$platform" >> $GITHUB_OUTPUT
+      shell: bash
