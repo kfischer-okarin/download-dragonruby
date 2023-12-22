@@ -17,7 +17,11 @@ inputs:
 outputs:
   version:
     description: Version downloaded
-    value: ${{ steps.download-dragonruby-version.outputs.version || steps.download-latest-dragonruby-version.outputs.version }}
+    value: >-
+      ${{
+          steps.download-dragonruby-version.outputs.version ||
+          steps.download-latest-dragonruby-version.outputs.version
+      }}
 
 runs:
   using: "composite"
