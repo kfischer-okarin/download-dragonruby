@@ -17,29 +17,24 @@ inputs:
 outputs:
   version:
     description: Version downloaded
-    value: >-
-      ${{
-          steps.download-dragonruby-version.outputs.version ||
-          steps.download-latest-dragonruby-version.outputs.version
-      }}
+    value: ${{ steps.download-dragonruby.outputs.version }}
 
 runs:
   using: "composite"
   steps:
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
-    - name: Download DragonRuby ${{ inputs.version }}-${{ inputs.license_tier }}
-      id: download-dragonruby-version
-      run: |
-        download_dragonruby.sh ${{ inputs.version }} ${{ inputs.license_tier }}
-        echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+    - name: Set Version ${{ inputs.version }}
+      run: echo "DR_VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
       shell: bash
       if: ${{ inputs.version != 'latest' }}
-    - name: Download latest DragonRuby (${{inputs.license_tier}})
-      id: download-latest-dragonruby-version
-      run: |
-        latest_version=$(print_latest_dragonruby_version.sh)
-        download_dragonruby.sh $latest_version ${{ inputs.license_tier }}
-        echo "version=$latest_version" >> $GITHUB_OUTPUT
+    - name: Set latest version
+      run: echo "DR_VERSION=$(print_latest_dragonruby_version.sh)" >> "$GITHUB_ENV"
       shell: bash
       if: ${{ inputs.version == 'latest' }}
+    - name: Download DragonRuby ${{ env.DR_VERSION }}-${{ inputs.license_tier }}
+      id: download-dragonruby
+      run: |
+        download_dragonruby.sh $DR_VERSION ${{ inputs.license_tier }}
+        echo "version=$DR_VERSION" >> $GITHUB_OUTPUT
+      shell: bash
