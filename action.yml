@@ -18,6 +18,9 @@ outputs:
   version:
     description: Version downloaded
     value: ${{ steps.download-dragonruby.outputs.version }}
+  platform:
+    description: DragonRuby platform. One of 'windows-amd64', 'macos', 'linux-amd64'.
+    value: ${{ steps.download-dragonruby.outputs.platform }}
 
 runs:
   using: "composite"
@@ -37,4 +40,13 @@ runs:
       run: |
         download_dragonruby.sh $DR_VERSION ${{ inputs.license_tier }}
         echo "version=$DR_VERSION" >> $GITHUB_OUTPUT
+
+        if [[ $RUNNER_OS == "Linux" ]]; then
+          platform="linux-amd64"
+        elif [[ $RUNNER_OS == "macOS" ]]; then
+          platform="macos"
+        elif [[ $RUNNER_OS == "Windows" ]]; then
+          platform="windows-amd64"
+        fi
+        echo "platform=$platform" >> $GITHUB_OUTPUT
       shell: bash
