@@ -36,8 +36,18 @@ jobs:
           version: '5.3'
       - name: Verify Version
         run: ./tests/verify-dragonruby-version 5.3
-      - name: Verify Outputs
+      - name: Verify version output
         run: test "${{ steps.download-dragonruby.outputs.version }}" == "5.3"
+      - name: Verify platform output
+        run: |
+          platform="${{ steps.download-dragonruby.outputs.platform }}"
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            test $platform == "linux-amd64"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            test $platform == "macos"
+          else
+            test $platform == "windows-amd64"
+          fi
   test-latest-version:
     name: Test latest version
     runs-on: ${{ matrix.os }}
