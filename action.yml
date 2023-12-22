@@ -17,7 +17,7 @@ inputs:
 outputs:
   version:
     description: Version downloaded
-    value: ${{ steps.download-dragonruby-version.outputs.version }}
+    value: ${{ steps.download-dragonruby-version.outputs.version || steps.download-latest-dragonruby-version.outputs.version }}
 
 runs:
   using: "composite"
@@ -32,6 +32,10 @@ runs:
       shell: bash
       if: ${{ inputs.version != 'latest' }}
     - name: Download latest DragonRuby (${{inputs.license_tier}})
-      run: download_dragonruby.sh $(print_latest_dragonruby_version.sh) ${{ inputs.license_tier }}
+      id: download-latest-dragonruby-version
+      run: |
+        latest_version=$(print_latest_dragonruby_version.sh)
+        download_dragonruby.sh $latest_version ${{ inputs.license_tier }}
+        echo "version=$latest_version" >> $GITHUB_OUTPUT
       shell: bash
       if: ${{ inputs.version == 'latest' }}
