@@ -8,6 +8,8 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+
 env:
   # For headless DragonRuby execution
   SDL_AUDIODRIVER: dummy
